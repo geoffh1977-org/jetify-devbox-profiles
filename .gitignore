@@ -8,6 +8,7 @@ devbox.lock
 # Ignore Environment Files
 .env
 .env.local
+!.env.example
 
 # Ignore Local Files
 .local/
