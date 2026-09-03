@@ -8,10 +8,9 @@ services:
       - DEVBOX_UID=${DEVBOX_UID:-1000}
       - DEVBOX_GID=${DEVBOX_GID:-1000}
 
-    entrypoint: ["/bin/bash", "-ceu", "chown -R -- $DEVBOX_UID:$DEVBOX_GID /managed/.devbox /managed/bash"]
+    entrypoint: ["/usr/local/bin/chown-volumes.sh", "-u", "${DEVBOX_UID:-1000}", "-g", "${DEVBOX_GID:-1000}", "/managed"]
     volumes:
-      - devbox_user_cache:/managed/.devbox
-      - bash_user_cache:/managed/bash
+      - devbox_user_cache:/managed/devbox_user_cache
 
   # Development Container
   dev:
@@ -22,6 +21,9 @@ services:
       - DEVBOX_UID=${DEVBOX_UID:-1000}
       - DEVBOX_GID=${DEVBOX_GID:-1000}
 
+      # Host Docker Id
+      - DOCKER_GID
+
       # GPG Agent Socket For Git GPG Signing
       - GPG_AGENT_SOCKET=${GPG_AGENT_SOCKET:-/run/user/${DEVBOX_UID:-1000}/gnupg/S.gpg-agent}
       - GPG_AGENT_INFO=${GPG_AGENT_SOCKET:-/run/user/${DEVBOX_UID:-1000}/gnupg/S.gpg-agent}
@@ -30,7 +32,6 @@ services:
       # Cache Persistence Via Local Volumes
       - nix_store:/nix
       - devbox_user_cache:/home/devbox/.devbox
-      - bash_user_cache:/home/devbox/.config/bash
 
       # Mount The Current Project Directory
       - ${PWD}:/Project:cached
@@ -38,8 +39,12 @@ services:
       # Mount GPG Socket Path (Needed For Git)
       - /run/user/${DEVBOX_UID:-1000}/gnupg:/run/user/${DEVBOX_UID:-1000}/gnupg:ro
 
+      # Docker Docket Mount (For Docker-In-Docker)
+      - /var/run/docker.sock:/var/run/docker.sock
+
       # Environment Configuration Files
       - ${ENVIRONMENT_PATH}/.config/git/config:/home/devbox/.config/git/config:ro
+      - ${ENVIRONMENT_PATH}/.docker:/home/devbox/.docker
       - ${ENVIRONMENT_PATH}/.ssh:/home/devbox/.ssh:ro
 
     depends_on:
@@ -52,10 +57,11 @@ services:
     tty: true
     cap_add:
       - SYS_ADMIN
+
+    # Disable Seccomp For Docker-In-Docker And MacOS Compatibility
     security_opt:
       - seccomp:unconfined
 
 volumes:
   nix_store:
   devbox_user_cache:
-  bash_user_cache:
