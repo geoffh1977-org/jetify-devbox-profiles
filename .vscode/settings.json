@@ -1,0 +1,6 @@
+{
+    "direnv.path.executable": "direnv",
+    "json.schemaDownload.trustedDomains": {
+        "https://raw.githubusercontent.com/jetify-com/devbox/": true
+    }
+}
