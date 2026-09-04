@@ -1,6 +1,6 @@
 services:
   # Init User Owned Volumes
-  init-devbox-volumes:
+  init-volumes:
     image: geoffh1977/jetify-devbox:latest
     user: "0:0"
     environment:
@@ -49,7 +49,7 @@ services:
 
     depends_on:
       # Ensures init-permissions runs AND exits with code 0 before app starts
-      init-devbox-volumes:
+      init-volumes:
         condition: service_completed_successfully
 
     working_dir: /home/devbox
