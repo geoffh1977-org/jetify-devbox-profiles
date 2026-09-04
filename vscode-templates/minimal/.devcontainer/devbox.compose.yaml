@@ -10,7 +10,7 @@ services:
 
     entrypoint: ["/usr/local/bin/chown-volumes.sh", "-u", "${DEVBOX_UID:-1000}", "-g", "${DEVBOX_GID:-1000}", "/managed"]
     volumes:
-      - devbox_user_cache:/volumes/devbox_user_cache
+      - user_cache:/volumes/user_cache
 
   # Development Container
   dev:
@@ -28,7 +28,7 @@ services:
     volumes:
       # Cache Persistence Via Local Volumes
       - nix_store:/nix
-      - devbox_user_cache:/home/devbox/.devbox
+      - user_cache:/home/devbox/.cache
 
       # Mount The Current Project Directory
       - ${PWD}:/Project:cached
@@ -56,4 +56,4 @@ services:
       - seccomp:unconfined
 volumes:
   nix_store:
-  devbox_user_cache:
+  user_cache:
