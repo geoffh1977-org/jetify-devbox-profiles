@@ -1,0 +1,103 @@
+services:
+  # Init User Owned Volumes
+  init-volumes:
+    image: geoffh1977/jetify-devbox:latest
+    user: "0:0"
+    environment:
+      # Devbox User/Group Id
+      - DEVBOX_UID=${DEVBOX_UID:-1000}
+      - DEVBOX_GID=${DEVBOX_GID:-1000}
+
+    entrypoint: ["/usr/local/bin/chown-volumes.sh", "-u", "${DEVBOX_UID:-1000}", "-g", "${DEVBOX_GID:-1000}", "/volumes"]
+    volumes:
+      - devbox_user_cache:/volumes/devbox_user_cache
+      - devbox_user_devbox_d:/volumes/devbox_user_devbox_d
+      - vscode_server_cache:/volumes/vscode_server_cache
+      - user_share_cache:/volumes/user_share
+      - user_cache:/volumes/user_cache
+
+  # Client Devbox Instance
+  dev:
+    image: geoffh1977/jetify-devbox:latest
+    command: ["tail","-f","/dev/null"]
+
+    environment:
+      # Devbox User/Group Id
+      - DEVBOX_UID=${DEVBOX_UID:-1000}
+      - DEVBOX_GID=${DEVBOX_GID:-1000}
+
+      # Docker Host ID
+      - DOCKER_GID
+
+      # Name For The Prompt
+      - CLIENT_NAME
+
+      # GPG Agent Socket For Git GPG Signing
+      - GPG_AGENT_SOCKET=${GPG_AGENT_SOCKET:-/run/user/${DEVBOX_UID:-1000}/gnupg/S.gpg-agent}
+      - GPG_AGENT_INFO=${GPG_AGENT_SOCKET:-/run/user/${DEVBOX_UID:-1000}/gnupg/S.gpg-agent}
+
+      # Devbox Shell (ZSH)
+      - SHELL=/home/devbox/.devbox/nix/profile/default/bin/zsh
+
+    volumes:
+      # Docker Volume Mounts for Persistence
+      - nix_store:/nix
+      - devbox_user_cache:/home/devbox/.devbox
+      - devbox_user_devbox_d:/home/devbox/devbox.d
+      - vscode_server_cache:/home/devbox/.vscode-server
+      - user_share_cache:/home/devbox/.local/share
+      - user_cache:/home/${UNAME-devbox}/.cache
+
+      # Mount The Client Directories
+      - ${PROJECTS_PATH}:/home/devbox/Projects
+      - ${TEMP_PATH}:/home/devbox/Temp
+
+      # Docker Socket Mount (For Docker-In-Docker)
+      - /var/run/docker.sock:/var/run/docker.sock
+
+      # Mount GPG Socket Path (Needed For Git)
+      - /run/user/${DEVBOX_UID:-1000}/gnupg:/run/user/${DEVBOX_UID:-1000}/gnupg:ro
+
+      # Mount SSH Keys
+      - ${ENVIRONMENT_PATH}/.ssh:/home/devbox/.ssh
+
+      # Mount Devbox Environment Files
+      - ${ENVIRONMENT_PATH}/devbox.json:/home/devbox/devbox.json
+      - ${ENVIRONMENT_PATH}/devbox.lock:/home/devbox/devbox.lock
+
+      # Match Timezone To System Time
+      - /etc/zoneinfo/Australia/Melbourne:/etc/localtime:ro
+
+      # Environment Configuration Files
+      - ${ENVIRONMENT_PATH}/.config/docker:/home/devbox/.docker
+      - ${ENVIRONMENT_PATH}/.config/zsh:/home/devbox/.config/zsh
+      - ${ENVIRONMENT_PATH}/.config/zsh/zshrc-client:/home/devbox/.zshrc
+      - ${ENVIRONMENT_PATH}/.config/starship.toml:/home/devbox/.config/starship.toml
+
+      # Other Configuration Examples (Optional)
+      # - ${ENVIRONMENT_PATH}/.config/gh:/home/devbox/.config/gh
+      # - ${ENVIRONMENT_PATH}/.config/git:/home/devbox/.config/git
+      # - ${ENVIRONMENT_PATH}/.config/vscode:/home/devbox/.vscode
+      # - ${ENVIRONMENT_PATH}/.config/aws:/home/devbox/.aws
+      # - ${ENVIRONMENT_PATH}/.config/gcloud:/home/devbox/.config/gcloud
+      # - ${ENVIRONMENT_PATH}/.config/tmux:/home/devbox/.config/tmux
+
+
+    working_dir: /home/devbox
+    stdin_open: true
+    tty: true
+    cap_add:
+      - SYS_ADMIN
+
+    # Disable Seccomp Profile For Docker-In-Docker or MacOS
+    security_opt:
+      - seccomp:unconfined
+
+volumes:
+  nix_store:
+  devbox_user_cache:
+  devbox_user_devbox_d:
+  vscode_server_cache:
+  user_cache:
+  user_share_cache:
+

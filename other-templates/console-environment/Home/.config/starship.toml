@@ -1,0 +1,16 @@
+# Global prompt format (includes your custom env_var)
+format = "$all$env_var$character"
+
+# Disable the Docker tag
+[docker_context]
+disabled = true
+
+[container]
+disabled = true
+
+# Module-specific configuration for CLIENT_NAME
+[env_var.CLIENT_NAME]
+variable = "CLIENT_NAME"
+format = "💼 [$env_value]($style) "
+style = "bold blue"
+

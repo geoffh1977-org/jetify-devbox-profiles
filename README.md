@@ -10,10 +10,11 @@ The primary audience is developers who want a repeatable container-based Devbox 
 | --- | --- |
 | `vscode-templates/minimal/` | General-purpose Devbox Dev Container with an empty package list. Use it as the starting point for most projects. |
 | `vscode-templates/docker-image/` | Devbox Dev Container for projects that build Docker images. Includes the Docker CLI, Hadolint, ShellCheck, and pre-commit configuration. It mounts the host Docker socket. |
-| `devbox.json` | The profile used to maintain this template repository. It supplies `pre-commit`. |
-| `.devcontainer/` | The Dev Container configuration used by this repository itself. |
+| `other-templates/console-environment/` | A standalone Compose-based personal/client console environment with isolated home configuration and mounted project and temporary-storage paths. |
 
-Both templates provide:
+Each profile directory has its own README with its capabilities, setup steps, required host tools, optional integrations, and security implications. Start with the profile README when adopting a specific template.
+
+The VS Code templates provide:
 
 - a VS Code Dev Container that uses `geoffh1977/jetify-devbox:latest`;
 - the project mounted at `/Project` inside the container;

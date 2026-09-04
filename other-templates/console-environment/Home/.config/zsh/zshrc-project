@@ -1,0 +1,15 @@
+#!/usr/bin/env zsh
+
+# Execute Programs On VSCode Termial Startup
+if [[ "$TERM_PROGRAM" == "vscode" ]]; then
+  if [[ "${DEVBOX_WD}" == "" ]]; then
+    exec devbox shell 
+  else
+    source ./devbox.d/zsh-environment/setup-devbox.sh
+    source ./devbox.d/zsh-environment/zsh-config.sh
+  fi
+
+fi
+
+
+if [ -e /home/devbox/.nix-profile/etc/profile.d/nix.sh ]; then . /home/devbox/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer

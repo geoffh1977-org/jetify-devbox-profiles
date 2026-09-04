@@ -1,0 +1,84 @@
+---
+version: '3'
+
+vars:
+  # Configure The Client Variables
+  CLIENT_NAME: 'Personal'
+  CLIENT_ROOT: '{{.TASKFILE_DIR}}'
+
+tasks:
+  default:
+    # desc: A Hidden Default Action To List Available Commands.
+    cmds:
+      - task -l
+    silent: true
+    aliases:
+      - list
+
+  generate-compose-env:
+    desc: Generate .env File For Docker Compose.
+    silent: true
+    cmds:
+      - |
+        echo "# Environment File" > {{.CLIENT_ROOT}}/.env
+        echo "DEVBOX_UID=$(id -u)" >> {{.CLIENT_ROOT}}/.env
+        echo "DEVBOX_GID=$(id -g)" >> {{.CLIENT_ROOT}}/.env
+        echo "DOCKER_GID=$(getent group docker | cut -d: -f3)" >> {{.CLIENT_ROOT}}/.env
+        echo "CLIENT_NAME={{.CLIENT_NAME}}" >> {{.CLIENT_ROOT}}/.env
+        echo "ENVIRONMENT_PATH={{.CLIENT_ROOT}}/Home" >> {{.CLIENT_ROOT}}/.env
+        echo "PROJECTS_PATH={{.CLIENT_ROOT}}/Projects" >> {{.CLIENT_ROOT}}/.env
+        echo "TEMP_PATH={{.CLIENT_ROOT}}/Temp" >> {{.CLIENT_ROOT}}/.env
+
+  init-volumes:
+    desc: Initialise Volumes Before First Run.
+    silent: true
+    cmds:
+      - task: generate-compose-env
+      - docker compose run --rm init-volumes
+
+  up:
+    desc: Start Client Instance In Background.
+    silent: true
+    cmds:
+      - task: generate-compose-env
+      - docker compose up -d dev
+    aliases:
+      - start
+
+  down:
+    desc: Stop Client Instance In Background.
+    silent: true
+    cmds:
+      - docker compose down
+    aliases:
+      - stop
+
+  nuke:
+    desc: Stop Client Instance And Destroy Volumes.
+    silent: true
+    cmds:
+      - docker compose down -v
+      - rm "{{.CLIENT_ROOT}}/.env" 2>/dev/null || true
+
+  restart:
+    desc: Perform And Stop And Start On Client Instance
+    silent: true
+    cmds:
+      - task: down
+      - task: up
+
+  terminal:
+    desc: Start/Attach Docker Based Terminal For Client Instance.
+    silent: true
+    cmds:
+      - task: generate-compose-env
+      - clear
+      - |
+        if docker ps --format '{{.Names}}' | grep $(basename {{.CLIENT_ROOT}} | tr "[:upper:]" "[:lower:]")-dev 2>&1 >/dev/null
+        then
+          # Attach To Existing Container
+          docker compose exec -ti -u devbox dev devbox shell
+        else
+          # Run An Independant Container
+          docker compose run -it --rm dev devbox shell
+        fi

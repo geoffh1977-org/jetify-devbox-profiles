@@ -3,7 +3,7 @@
 # Ignore Devbox Files/Directories
 .devbox/
 devbox.d/
-devbox.lock
+/devbox.lock
 
 # Ignore Environment Files
 .env
@@ -22,3 +22,6 @@ log/
 # Ignore Any Output Files
 dist/
 output/
+
+# Allow File
+!other-templates/console-environment/devbox.lock

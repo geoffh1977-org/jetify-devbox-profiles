@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/latest/.schema/devbox.schema.json",
+  "include": [
+    "github:geoffh1977-org/jetify-devbox-plugins/main?dir=zsh-environment"
+  ],
+  "packages": [
+    "docker-client@latest"
+  ]
+}
