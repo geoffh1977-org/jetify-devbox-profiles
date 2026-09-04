@@ -1,6 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/latest/.schema/devbox.schema.json",
   "packages": [
+    "go-task@latest",
     "hadolint@latest",
     "pre-commit@latest",
     "shellcheck@latest",
