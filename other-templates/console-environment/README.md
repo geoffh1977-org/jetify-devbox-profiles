@@ -7,7 +7,8 @@ This is a terminal-focused Compose profile, not a VS Code Dev Container template
 ## What this profile provides
 
 - A `geoffh1977/jetify-devbox:latest` console container that opens `devbox shell` as the `devbox` user.
-- Separate host-backed directories mounted as:
+- Separate host-backed directories mounted as:| `devbox.json` | The profile used to maintain this template repository. It supplies `pre-commit`. |
+| `.devcontainer/` | The Dev Container configuration used by this repository itself. |
   - `Home/` → the container's Devbox home configuration and `devbox.json`/`devbox.lock`.
   - `Projects/` → `/home/devbox/Projects`.
   - `Temp/` → `/home/devbox/Temp`.
@@ -103,3 +104,38 @@ docker compose config
 ## Security notes
 
 The console is a trusted local environment, not a sandbox. It mounts the host Docker socket, SSH directory, optional GPG-agent socket, and Docker configuration; processes in the container can therefore act with the permissions those integrations grant. Keep separate client contexts in separate copies of this profile, minimize the mounted host data, use trusted images and projects only, and never commit the generated `.env` or credential material.
+
+## Troubleshooting and optional VS Code attachment
+
+### Zsh is unavailable when VS Code opens a terminal
+
+On a newly created console, VS Code can attach before the Devbox profile has been initialised. Because `compose.yaml` sets `SHELL` to the Zsh binary supplied by that profile, an integrated terminal can then report that Zsh is unavailable.
+
+Initialize the profile once from a host terminal, then reconnect VS Code:
+
+```bash
+task terminal
+```
+
+`task terminal` starts `devbox shell`, which performs the initial Devbox environment load. If the problem remains, stop and start the profile again with `task restart`, then reconnect.
+
+### Attach VS Code to the running console as `devbox`
+
+A single console can be useful when multiple VS Code clients need to work with the same mounted projects, or when a repository must not contain `.devcontainer/` or `.vscode/` configuration. This profile does not include a project Dev Container definition; use VS Code's **Attach to Running Container** workflow after starting the console with `task up`.
+
+The first attachment may use the image's default user rather than `devbox`. Configure VS Code to reconnect as `devbox`:
+
+1. Open a new VS Code window and run **Dev Containers: Attach to Running Container**.
+2. Select the console container.
+3. From the Command Palette, open the named configuration file for that container (search for **Dev Containers: Open Named Configuration File**).
+4. Add the following setting and save the file:
+
+   ```json
+   {
+     "remoteUser": "devbox"
+   }
+   ```
+
+5. Close the remote VS Code window and attach to the container again.
+
+Avoid using a root attachment for normal development: it can create root-owned VS Code Server files in the persistent volume. If that has already happened and VS Code cannot reconnect cleanly, `task nuke` removes the profile's named volumes. It is destructive—recreate the environment afterwards with `task init-volumes`, `task up`, and then `task terminal`.
