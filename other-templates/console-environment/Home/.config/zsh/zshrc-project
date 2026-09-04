@@ -3,12 +3,8 @@
 # Execute Programs On VSCode Termial Startup
 if [[ "$TERM_PROGRAM" == "vscode" ]]; then
   if [[ "${DEVBOX_WD}" == "" ]]; then
-    exec devbox shell 
-  else
-    source ./devbox.d/zsh-environment/setup-devbox.sh
-    source ./devbox.d/zsh-environment/zsh-config.sh
+    exec devbox shell
   fi
-
 fi
 
 

@@ -1,0 +1,19 @@
+{
+    "name": "Devbox",
+    "dockerComposeFile": [
+        "devbox.compose.yaml"
+    ],
+    "service": "dev",
+    "workspaceFolder": "/Project",
+    "remoteUser": "devbox",
+    "shutdownAction": "stopCompose",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "mkhl.direnv",
+                "opentofu.vscode-opentofu",
+                "github.vscode-github-actions"
+            ]
+        }
+    }
+}
