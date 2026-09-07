@@ -33,9 +33,9 @@ Using the same `ENVIRONMENT_PATH` therefore shares **configuration state**—suc
 A typical paired setup is:
 
 ```text
-/home/geoffrey/Development/Personal/Home     # ENVIRONMENT_PATH for both profiles
-/home/geoffrey/Development/Personal/Temp     # TEMP_PATH for both profiles
-/home/geoffrey/Development/Projects/example  # project created from this template
+$HOME/Development/Personal/Home     # ENVIRONMENT_PATH for both profiles
+$HOME/Development/Personal/Temp     # TEMP_PATH for both profiles
+$HOME/Development/Projects/example  # project created from this template
 ```
 
 The console's `Home/devbox.json` remains its home-level console manifest. This template's `devbox.json` remains the project-level manifest and may contain project-specific tools such as `go-task`.

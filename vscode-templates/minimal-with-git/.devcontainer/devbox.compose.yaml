@@ -21,6 +21,10 @@ services:
       - DEVBOX_UID=${DEVBOX_UID:-1000}
       - DEVBOX_GID=${DEVBOX_GID:-1000}
 
+      # GPG Agent Socket For Git GPG Signing
+      - GPG_AGENT_SOCKET=${GPG_AGENT_SOCKET:-/run/user/${DEVBOX_UID:-1000}/gnupg/S.gpg-agent}
+      - GPG_AGENT_INFO=${GPG_AGENT_SOCKET:-/run/user/${DEVBOX_UID:-1000}/gnupg/S.gpg-agent}
+
     volumes:
       # Cache Persistence Via Local Volumes
       - nix_store:/nix
@@ -28,6 +32,13 @@ services:
 
       # Mount The Current Project Directory
       - ${PWD}:/Project:cached
+
+      # Mount GPG Socket Path (Needed For Git)
+      - /run/user/${DEVBOX_UID:-1000}/gnupg:/run/user/${DEVBOX_UID:-1000}/gnupg:ro
+
+      # Environment Configuration Files
+      - ${ENVIRONMENT_PATH}/.config/git/config:/home/devbox/.config/git/config:ro
+      - ${ENVIRONMENT_PATH}/.ssh:/home/devbox/.ssh:ro
 
     depends_on:
       # Ensures init-permissions runs AND exits with code 0 before app starts

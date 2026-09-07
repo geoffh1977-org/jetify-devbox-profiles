@@ -1,0 +1,23 @@
+# GitIgnore File For The Project
+
+# Ignore Devbox Files/Directories
+.devbox/
+devbox.d/
+devbox.lock
+
+# Ignore Environment Files
+.env
+.env.local
+
+# Ignore Local Files
+.local/
+
+# Ignore Logging And Temporary Files
+*.log
+*.tmp
+tmp/
+log/
+
+# Ignore Any Output Files
+dist/
+output/

@@ -3,7 +3,7 @@
 # Execute Programs On VSCode Termial Startup
 if [[ "$TERM_PROGRAM" == "vscode" ]]; then
   if [[ "${DEVBOX_WD}" == "" ]]; then
-    exec devbox shell 
+    exec devbox shell
   fi
 fi
 

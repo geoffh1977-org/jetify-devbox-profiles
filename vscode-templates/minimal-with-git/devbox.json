@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/latest/.schema/devbox.schema.json",
+  "packages":[],
+  "shell": {
+    "scripts": {}
+  }
+}

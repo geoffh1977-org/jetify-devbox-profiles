@@ -13,4 +13,3 @@ disabled = true
 variable = "CLIENT_NAME"
 format = "💼 [$env_value]($style) "
 style = "bold blue"
-
