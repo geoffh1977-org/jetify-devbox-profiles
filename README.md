@@ -9,6 +9,7 @@ The primary audience is developers who want a repeatable container-based Devbox 
 | Path | Purpose |
 | --- | --- |
 | `vscode-templates/minimal/` | General-purpose Devbox Dev Container with an empty package list. Use it as the starting point for most projects. |
+| `vscode-templates/minimal-with-git/` | General-purpose Devbox Dev Container with an empty package list. Mounts GPG and SSH. Use it as the starting point for most projects. |
 | `vscode-templates/docker-image/` | Devbox Dev Container for projects that build Docker images. Includes the Docker CLI, Hadolint, ShellCheck, and pre-commit configuration. It mounts the host Docker socket. |
 | `other-templates/console-environment/` | A standalone Compose-based personal/client console environment with isolated home configuration and mounted project and temporary-storage paths. |
 
